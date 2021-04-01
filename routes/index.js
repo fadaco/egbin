@@ -2,7 +2,6 @@ const userController = require('../controllers').user;
 const leaveRequestController = require('../controllers').leaveRequest;
 const {auth, admin, staff} = require('../middleware/auth');
 
-
 module.exports = (app) => {
    app.post('/api/user/register', userController.register),
    app.post('/api/user/add-staff', [auth, admin], userController.create),
