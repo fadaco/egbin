@@ -23,7 +23,6 @@ const saveItem = async (req, res, initialTemp, newValue, userFind) => {
 
  
 module.exports = {
-
     async request_leave(req, res) {
         const diff = moment(req.body.startDate, 'YYYY-MM-DD').businessDiff(moment(req.body.endDate,'YYYY-MM-DD'));
 
@@ -89,10 +88,29 @@ module.exports = {
         if (user.line_manager_staff_id === req.user.id) {
               leaveRequest.dateApproved = momentMac(new Date()).format('YYYY-MM-DD h:mm:ss');
              leaveRequest.status = req.body.status;
+             if (req.body.status === 'rejected') {
+                 if(leaveRequest.typeOfLeave === 'sick leave'){
+                    user.sick_leave_balance = leaveRequest.initialLeaveBalance
+                 } else if (leaveRequest.typeOfLeave === 'exam leave'){
+                    user.exam_leave_balance = leaveRequest.initialLeaveBalance
+                 } else {
+                    user.annual_leave_balance = leaveRequest.initialLeaveBalance
+
+                 }
+                 await user.save();
+             }
               await leaveRequest.save()
               return res.status(200).send(JsonResponse(200, `successfully ${req.body.status}`, leaveRequest))
         } else {
             return res.status(400).send(JsonResponse(400, "unable to approve, because you are not the line manager"))
         }
+    },
+    async get_leave_request(req, res) {
+      const lr =  await LeaveRequest.findAll({})
+      return res.status(200).send(lr)
+    },
+    async get_your_leave_request(req, res) {
+        const ylr = await LeaveRequest.findAll({where: {userId: req.user.id}})
+        return res.status(200).send(ylr)
     }
 }

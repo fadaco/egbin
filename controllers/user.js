@@ -66,15 +66,33 @@ module.exports = {
       return res.status(200).send(JsonResponse(200, 'operation successful', data))
     },
 
+    async fetch_all_staff(req, res) {
+       const user = await User.findAll({where: {type: 'staff'}})
+       return res.status(200).send(JsonResponse(200, 'operation successful', user))
+    },
+    async edit_staff(req, res) {
+      const user = await User.findOne({where: {id: req.body.id}})
+      user.first_name = req.body.first_name;
+      user.last_name = req.body.last_name;
+      user.staff_id = req.body.staff_id;
+      user.sick_leave_balance = req.body.sick_leave_balance;
+      user.exam_leave_balance = req.body.exam_leave_balance;
+      user.annual_leave_balance = req.body.annual_leave_balance;
+      await user.save();
+      return res.status(200).send(JsonResponse(200, 'edit successfully', user))
+
+    },
+    async delete_staff(req, res) {
+      try {
+     await User.destroy({where: {id: req.body.id}})
+     return res.status(200).send(JsonResponse(200, 'deleted successfully'))
+      } catch(err){
+        return res.status(400).send(JsonResponse(400, 'unable to delete'))
+      }
+
+    }
+
     
 
-    //  fetch_customer_transactions(req, res) {
-    //  Customer_Transactions.findAll({
-    //         where: {
-    //             customer_id: 2
-    //           }
-    //     }).then((customer_transactions) => res.status(200).send(JsonResponse(200, 'operation successful', customer_transactions)))
-    //      .catch((error) => res.status(200).send(JsonResponse(400, 'operation failed', error)))
-          
-    // }
+   
 }

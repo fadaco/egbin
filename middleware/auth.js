@@ -19,7 +19,7 @@ const admin = (req, res, next) => {
 }
 
 const staff = (req, res, next) => {
-    if(req.user.type !== "staff") return res.status(403).send(JsonResponse(403, 'Access denied'))
+    if(req.user.type !== "staff") return res.status(403).send(JsonResponse(403, 'Access denied, Login as a staff'))
     next();
 }
 

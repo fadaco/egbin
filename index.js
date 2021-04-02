@@ -2,12 +2,16 @@ const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
+var cors = require('cors')
+
 
 dotenv.config({path: './config/.env'});
 
 const http = require('http');
 // Set up the express app
 const app = express();
+app.use(cors())
+
 // Log requests to the console.
 app.use(logger('dev'));
 app.use(bodyParser.json());
